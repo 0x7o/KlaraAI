@@ -1,4 +1,4 @@
-from models.nanofialka import NanoFialka
+from .models.nanofialka import NanoFialka
 
 
 class DialogManager:
