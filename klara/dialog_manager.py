@@ -29,10 +29,14 @@ class DialogManager:
             {
                 "role": "user",
                 "content": user
-                + func,
+                           + func,
             }
         )
         message = ""
+
+        # Обрезаем историю чата до 8 последних сообщений, сохраняя системный промпт
+        if len(self.messages) > 9:
+            self.messages = [self.messages[0]] + self.messages[-8:]
 
         print(self.messages)
 
