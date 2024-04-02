@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 
 app = FastAPI()
-tts = TTS("klara-tts/").to("cuda:0")
+tts = TTS(model_path="model.pth", config_path="config.json")
 
 
 @app.get("/tts")
