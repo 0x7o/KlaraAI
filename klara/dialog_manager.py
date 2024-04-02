@@ -24,7 +24,11 @@ class DialogManager:
         self.model = model
 
     def get_response(self, user, function_result=False):
-        func = f"\nВывод системы для формирования ответа: {function_result}" if function_result else ""
+        func = (
+            f"\nВывод системы для формирования ответа: {function_result}"
+            if function_result
+            else ""
+        )
         self.messages.append(
             {
                 "role": "user",

@@ -9,7 +9,10 @@ class Claude:
 
     def generate(self, messages: list):
         for chunk in self.client.chat.completions.create(
-            model="anthropic/claude-3-haiku", messages=messages, stream=True, temperature=1.0
+            model="anthropic/claude-3-haiku",
+            messages=messages,
+            stream=True,
+            temperature=1.0,
         ):
             yield chunk.choices[0].delta.content
 
