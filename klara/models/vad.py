@@ -55,4 +55,4 @@ class VAD:
         if self.stream is not None:
             self.stream.stop_stream()
             self.stream.close()
-        self.audio.terminate()
+        # self.audio.terminate()

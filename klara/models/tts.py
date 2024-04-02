@@ -3,7 +3,7 @@ import torch
 
 
 class TTS:
-    def __init__(self, speaker="kseniya", sample_rate=48000):
+    def __init__(self, speaker="kseniya", sample_rate=24000):
         self.model, _ = torch.hub.load(
             repo_or_dir="snakers4/silero-models",
             model="silero_tts",

@@ -23,6 +23,7 @@ while True:
     if not state:
         print("Button pressed")
         audio = vad.start_recording()
+        vad.stop_recording()
         print("Recording stopped")
         text = stt.process(audio)
         print(f"Recognized: {text}")
