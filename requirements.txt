@@ -3,3 +3,5 @@ transformers>=4.32.1
 pyaudio>=0.2.14
 torch
 RPi.GPIO
+torchaudio
+omegaconf
