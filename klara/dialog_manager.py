@@ -1,4 +1,5 @@
 from .models.claude import Claude
+import re
 
 
 class DialogManager:
@@ -38,5 +39,10 @@ class DialogManager:
         for chunk in self.model.generate(self.messages):
             message += chunk
 
+        message = self.clear(message)
+
         self.messages.append({"role": "assistant", "content": message})
         return message
+
+    def clear(self, text):
+        return re.sub(r"\*.*?\*", "", text)
