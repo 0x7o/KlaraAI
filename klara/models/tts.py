@@ -15,10 +15,11 @@ class TTS:
         self.p = pyaudio.PyAudio()
 
     def play_audio(self, audio):
+        audio_np = audio.numpy()  # Convert tensor to numpy array
         stream = self.p.open(
             format=pyaudio.paFloat32, channels=1, rate=self.sample_rate, output=True
         )
-        stream.write(audio.tobytes())
+        stream.write(audio_np.tobytes())  # Call tobytes on numpy array
         stream.stop_stream()
         stream.close()
 
