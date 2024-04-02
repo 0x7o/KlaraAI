@@ -35,7 +35,7 @@ class VAD:
         )
         silence_duration = 0
         while True:
-            audio_chunk = self.stream.read(self.chunk)
+            audio_chunk = self.stream.read(self.chunk, exception_on_overflow=False)
             audio_int16 = np.frombuffer(audio_chunk, np.int16)
             audio_float32 = self.int2float(audio_int16)
             data.append(audio_float32)
