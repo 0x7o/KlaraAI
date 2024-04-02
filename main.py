@@ -18,7 +18,6 @@ dm = DialogManager(model=claude)
 
 while True:
     state = GPIO.input(BUTTON)
-    print(state)
     if not state:
         print("Button pressed")
         audio = vad.start_recording()

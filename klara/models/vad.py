@@ -5,7 +5,7 @@ import torch
 
 class VAD:
     def __init__(
-        self, sample_rate=16000, channels=1, format=pyaudio.paInt16, chunk=1024
+        self, sample_rate=16000, channels=2, format=pyaudio.paInt16, chunk=1024
     ):
         self.model, self.utils = torch.hub.load(
             repo_or_dir="snakers4/silero-vad", model="silero_vad", force_reload=True
