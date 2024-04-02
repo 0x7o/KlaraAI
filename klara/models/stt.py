@@ -3,7 +3,7 @@ import numpy as np
 
 
 class STT:
-    def __init__(self, model_name="lorenzoncina/whisper-small-ru", sample_rate=16000):
+    def __init__(self, model_name="openai/whisper-base", sample_rate=16000):
         self.processor = WhisperProcessor.from_pretrained(model_name)
         self.model = WhisperForConditionalGeneration.from_pretrained(model_name)
         self.model.config.forced_decoder_ids = None
