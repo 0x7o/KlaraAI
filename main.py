@@ -16,6 +16,8 @@ stt = STT()
 claude = Claude(api_key="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")
 dm = DialogManager(model=claude)
 
+print("Okay")
+
 while True:
     state = GPIO.input(BUTTON)
     if not state:
