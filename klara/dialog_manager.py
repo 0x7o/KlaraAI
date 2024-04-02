@@ -28,8 +28,7 @@ class DialogManager:
         self.messages.append(
             {
                 "role": "user",
-                "content": user
-                           + func,
+                "content": user + func,
             }
         )
         message = ""
