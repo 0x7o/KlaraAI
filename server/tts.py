@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 
 app = FastAPI()
-tts = TTS(model_path="model.pth", config_path="config.json").to("cuda")
+tts = TTS(model_path="model.pth", config_path="config.json", gpu=True)
 
 
 @app.get("/tts")
