@@ -23,6 +23,9 @@ while True:
     if not state:
         print("Button pressed")
         audio = vad.start_recording()
+        print("Recording stopped")
         text = stt.process(audio)
+        print(f"Recognized: {text}")
         response = dm.get_response(text)
+        print(f"Response: {response}")
         tts.say(response)
