@@ -1,31 +1,26 @@
 import io
 import wave
-import pyaudio
 import aiohttp
 import asyncio
 import numpy as np
+import tempfile
+import os
 
 
 class TTS:
     def __init__(self):
         self.endpoint = "http://192.168.0.103:5002/api/tts"
-        self.p = pyaudio.PyAudio()
 
     async def play_audio(self, audio_bytes):
-        sample_rate = self.get_sample_rate(audio_bytes)
-        stream = self.p.open(format=pyaudio.paInt16,
-                             channels=1,
-                             rate=sample_rate,
-                             output=True)
-        audio_array = np.frombuffer(audio_bytes, dtype=np.float32)
-        stream.write(audio_array.tobytes())
-        stream.stop_stream()
-        stream.close()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+            temp_file.write(audio_bytes)
+            temp_file_path = temp_file.name
 
-    def get_sample_rate(self, audio_bytes):
-        with io.BytesIO(audio_bytes) as audio_file:
-            with wave.open(audio_file, 'rb') as wav_file:
-                return wav_file.getframerate()
+        command = f"aplay -D plughw:1,0 {temp_file_path}"
+        process = await asyncio.create_subprocess_shell(command)
+        await process.wait()
+
+        os.unlink(temp_file_path)
 
     async def get_audio(self, text):
         async with aiohttp.ClientSession() as session:
