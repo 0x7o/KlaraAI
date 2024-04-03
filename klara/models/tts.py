@@ -45,3 +45,8 @@ class TTS:
 
     def say(self, text_list):
         asyncio.run(self.say_async(text_list))
+
+if __name__ == "__main__":
+    texts = ["И смех, и грех лопашыващывапвыал" for i in range(10)]
+    tts = TTS()
+    tts.say(texts)
