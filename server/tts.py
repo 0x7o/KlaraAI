@@ -8,7 +8,7 @@ tts = TTS(model_path="model.pth", config_path="config.json").to("cuda")
 
 @app.get("/tts")
 def generate_tts(text: str):
-    tts.tts_to_file(text=text, file_path="output.wav")
+    tts.tts_to_file(text=text, file_path="output.wav", language="ru")
     return FileResponse("output.wav", media_type="audio/wav")
 
 
