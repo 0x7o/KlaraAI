@@ -5,7 +5,7 @@ import numpy as np
 
 class TTS:
     def __init__(self, sample_rate=44100):
-        self.endpoint = "http://192.168.0.111:5002/api/tts"
+        self.endpoint = "http://192.168.0.103:5002/api/tts"
         self.sample_rate = sample_rate
         self.p = pyaudio.PyAudio()
 
