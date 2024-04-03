@@ -1,7 +1,9 @@
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 import torch
-from transformers import AutoModelForSpeechSeq2Seq, WhisperProcessor, pipeline
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor
+from scipy.io import wavfile
+import io
 
 app = FastAPI()
 
@@ -13,36 +15,24 @@ model_id = "distil-whisper/distil-large-v3"
 model = AutoModelForSpeechSeq2Seq.from_pretrained(
     model_id, torch_dtype=torch_dtype, use_safetensors=True
 )
-model.config.forced_decoder_ids = WhisperProcessor.get_decoder_prompt_ids(language="russian", task="transcribe")
 model.to(device)
 
-processor = WhisperProcessor.from_pretrained(model_id)
-
-forced_decoder_ids = processor.get_decoder_prompt_ids(language="russian", task="transcribe")
-
-pipe = pipeline(
-    "automatic-speech-recognition",
-    model=model,
-    tokenizer=processor.tokenizer,
-    feature_extractor=processor.feature_extractor,
-    max_new_tokens=128,
-    torch_dtype=torch_dtype,
-    device=device,
-)
-
+processor = AutoProcessor.from_pretrained(model_id)
 
 class TranscriptionResponse(BaseModel):
     text: str
 
-
 @app.post("/transcribe", response_model=TranscriptionResponse)
 async def transcribe(file: UploadFile = File(...)):
     audio_bytes = await file.read()
-    result = pipe(audio_bytes, generate_kwargs={"forced-decoder-ids": forced_decoder_ids})
-    return {"text": result["text"]}
+    audio_stream = io.BytesIO(audio_bytes)
+    sampling_rate, audio_data = wavfile.read(audio_stream)
 
+    input_features = processor(audio_data, sampling_rate=sampling_rate, return_tensors="pt").input_features
+    input_features = input_features.to(device)
 
-if __name__ == "__main__":
-    import uvicorn
+    predicted_ids = model.generate(input_features, language="ru")
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
+
+    return {"text": transcription[0]}
