@@ -13,7 +13,7 @@ class TTS:
     def play_audio(self, audio_bytes):
         sample_rate = self.get_sample_rate(audio_bytes)
         print(sample_rate)
-        stream = self.p.open(format=pyaudio.paFloat32,
+        stream = self.p.open(format=pyaudio.paInt16,
                              channels=1,
                              rate=sample_rate,
                              output=True)
@@ -31,8 +31,3 @@ class TTS:
         response = requests.get(f"{self.endpoint}?text={text}")
         audio_bytes = response.content
         self.play_audio(audio_bytes)
-
-if __name__ == "__main__":
-    i = input(">>>")
-    tts = TTS()
-    tts.say(i)
