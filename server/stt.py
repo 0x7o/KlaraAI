@@ -9,7 +9,7 @@ app = FastAPI()
 
 device = "cuda:1" if torch.cuda.is_available() else "cpu"
 
-model_id = "distil-whisper/distil-large-v3"
+model_id = "lorenzoncina/whisper-small-ru"
 
 model = AutoModelForSpeechSeq2Seq.from_pretrained(model_id, use_safetensors=True)
 model.to(device)
