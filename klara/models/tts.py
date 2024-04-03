@@ -1,7 +1,8 @@
 import io
 import wave
 import pyaudio
-import requests
+import aiohttp
+import asyncio
 import numpy as np
 
 
@@ -10,9 +11,8 @@ class TTS:
         self.endpoint = "http://192.168.0.103:5002/api/tts"
         self.p = pyaudio.PyAudio()
 
-    def play_audio(self, audio_bytes):
+    async def play_audio(self, audio_bytes):
         sample_rate = self.get_sample_rate(audio_bytes)
-        print(sample_rate)
         stream = self.p.open(format=pyaudio.paInt16,
                              channels=1,
                              rate=sample_rate,
@@ -27,7 +27,24 @@ class TTS:
             with wave.open(audio_file, 'rb') as wav_file:
                 return wav_file.getframerate()
 
-    def say(self, text):
-        response = requests.get(f"{self.endpoint}?text={text}")
-        audio_bytes = response.content
-        self.play_audio(audio_bytes)
+    async def get_audio(self, text):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"{self.endpoint}?text={text}") as response:
+                return await response.read()
+
+    async def say_async(self, text_list):
+        tasks = []
+        for text in text_list:
+            audio_bytes = await self.get_audio(text)
+            task = asyncio.create_task(self.play_audio(audio_bytes))
+            tasks.append(task)
+        await asyncio.gather(*tasks)
+
+    def say(self, text_list):
+        asyncio.run(self.say_async(text_list))
+
+
+if __name__ == "__main__":
+    tts = TTS()
+    i = input(">>> ")
+    tts.say(["Привет!", "Пока!"])
