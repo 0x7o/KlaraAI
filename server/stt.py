@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 import torch
-from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from transformers import AutoModelForSpeechSeq2Seq, WhisperProcessor, pipeline
 
 app = FastAPI()
 
@@ -13,10 +13,10 @@ model_id = "distil-whisper/distil-large-v3"
 model = AutoModelForSpeechSeq2Seq.from_pretrained(
     model_id, torch_dtype=torch_dtype, use_safetensors=True
 )
-model.config.forced_decoder_ids = AutoProcessor.get_decoder_prompt_ids(language="russian", task="transcribe")
+model.config.forced_decoder_ids = WhisperProcessor.get_decoder_prompt_ids(language="russian", task="transcribe")
 model.to(device)
 
-processor = AutoProcessor.from_pretrained(model_id)
+processor = WhisperProcessor.from_pretrained(model_id)
 
 forced_decoder_ids = processor.get_decoder_prompt_ids(language="russian", task="transcribe")
 
