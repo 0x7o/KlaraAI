@@ -16,7 +16,7 @@ class TTS:
             temp_file.write(audio_bytes)
             temp_file_path = temp_file.name
 
-        command = f"aplay -D plughw:1,0 {temp_file_path}"
+        command = f"aplay -D plughw:3,0 {temp_file_path}"
         process = await asyncio.create_subprocess_shell(command)
         await process.wait()
 
