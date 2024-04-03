@@ -35,7 +35,7 @@ class TranscriptionResponse(BaseModel):
 @app.post("/transcribe", response_model=TranscriptionResponse)
 async def transcribe(file: UploadFile = File(...)):
     audio_bytes = await file.read()
-    result = pipe(audio_bytes)
+    result = pipe(audio_bytes, language="ru")
     return {"text": result["text"]}
 
 
