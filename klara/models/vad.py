@@ -23,7 +23,7 @@ class VAD:
         audio_float32 = np.divide(audio_float32, 32768)
         return audio_float32
 
-    def start_recording(self, silence_threshold=0.4, max_silence_duration=0.5):
+    def start_recording(self, silence_threshold=0.4, max_silence_duration=0.7):
         data = []
         self.stream = self.audio.open(
             format=self.format,

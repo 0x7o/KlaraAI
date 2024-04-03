@@ -33,9 +33,15 @@ class TTS:
                 return await response.read()
 
     async def say_async(self, text_list):
-        audio_bytes_list = await asyncio.gather(*[self.get_audio(text) for text in text_list])
-        for audio_bytes in audio_bytes_list:
-            await self.play_audio(audio_bytes)
+        audio_bytes = await self.get_audio(text_list[0])
+        play_task = asyncio.create_task(self.play_audio(audio_bytes))
+
+        for text in text_list[1:]:
+            audio_bytes = await self.get_audio(text)
+            await play_task
+            play_task = asyncio.create_task(self.play_audio(audio_bytes))
+
+        await play_task
 
     def say(self, text_list):
         asyncio.run(self.say_async(text_list))
