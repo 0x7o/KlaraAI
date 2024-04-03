@@ -4,17 +4,17 @@ import numpy as np
 
 
 class TTS:
-    def __init__(self, sample_rate=44100):
+    def __init__(self):
         self.endpoint = "http://192.168.0.103:5002/api/tts"
-        self.sample_rate = sample_rate
         self.p = pyaudio.PyAudio()
 
     def play_audio(self, audio_bytes):
-        audio_np = np.frombuffer(audio_bytes, dtype=np.float32)
-        stream = self.p.open(
-            format=pyaudio.paFloat32, channels=1, rate=self.sample_rate, output=True
-        )
-        stream.write(audio_np.tobytes())
+        stream = self.p.open(format=pyaudio.paFloat32,
+                             channels=1,
+                             rate=22050,
+                             output=True)
+        audio_array = np.frombuffer(audio_bytes, dtype=np.float32)
+        stream.write(audio_array.tobytes())
         stream.stop_stream()
         stream.close()
 
