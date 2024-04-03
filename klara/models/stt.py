@@ -9,7 +9,10 @@ class STT:
         self.server_url = server_url
 
     def process(self, audio, sample_rate=16000):
-        audio_int16 = (audio * 32767).astype(np.int16)
+        audio_floats = np.concatenate(
+            [np.frombuffer(a, dtype=np.float32) for a in audio]
+        )
+        audio_int16 = (audio_floats * 32767).astype(np.int16)
 
         audio_bytes = io.BytesIO()
         wavfile.write(audio_bytes, sample_rate, audio_int16)
