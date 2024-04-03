@@ -17,6 +17,8 @@ model.to(device)
 
 processor = AutoProcessor.from_pretrained(model_id)
 
+forced_decoder_ids = processor.get_decoder_prompt_ids(language="russian", task="transcribe")
+
 pipe = pipeline(
     "automatic-speech-recognition",
     model=model,
@@ -35,11 +37,8 @@ class TranscriptionResponse(BaseModel):
 @app.post("/transcribe", response_model=TranscriptionResponse)
 async def transcribe(file: UploadFile = File(...)):
     audio_bytes = await file.read()
-    input_features = processor(audio_bytes, sampling_rate=16000,
-                               return_tensors="pt").input_features
-    predicted_ids = model.generate(input_features, language="russian", task="transcribe")
-    transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
-    return {"text": transcription}
+    result = pipe(audio_bytes, generate_kwargs={"forced_decoder_ids": forced_decoder_ids})
+    return {"text": result["text"]}
 
 
 if __name__ == "__main__":
