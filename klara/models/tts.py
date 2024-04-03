@@ -12,10 +12,9 @@ class TTS:
         self.p = pyaudio.PyAudio()
 
     async def play_audio(self, audio_bytes):
-        sample_rate = self.get_sample_rate(audio_bytes)
         stream = self.p.open(format=pyaudio.paInt16,
                              channels=1,
-                             rate=sample_rate,
+                             rate=44100,
                              output=True)
         audio_array = np.frombuffer(audio_bytes, dtype=np.float32)
         stream.write(audio_array.tobytes())
@@ -42,9 +41,3 @@ class TTS:
 
     def say(self, text_list):
         asyncio.run(self.say_async(text_list))
-
-
-if __name__ == "__main__":
-    tts = TTS()
-    i = input(">>> ")
-    tts.say(["Привет!", "Пока!"])

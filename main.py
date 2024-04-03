@@ -1,3 +1,4 @@
+import re
 import RPi.GPIO as GPIO
 from klara.models.vad import VAD
 from klara.models.tts import TTS
@@ -17,6 +18,7 @@ claude = Claude(
     api_key="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"
 )
 dm = DialogManager(model=claude)
+pattern = r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s'
 
 print("Okay")
 
@@ -31,4 +33,4 @@ while True:
         print(f"Recognized: {text}")
         response = dm.get_response(text)
         print(f"Response: {response}")
-        tts.say(response)
+        tts.say(re.split(pattern, response))
