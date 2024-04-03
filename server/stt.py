@@ -13,6 +13,7 @@ model_id = "distil-whisper/distil-large-v3"
 model = AutoModelForSpeechSeq2Seq.from_pretrained(
     model_id, torch_dtype=torch_dtype, use_safetensors=True
 )
+model.config.forced_decoder_ids = AutoProcessor.get_decoder_prompt_ids(language="russian", task="transcribe")
 model.to(device)
 
 processor = AutoProcessor.from_pretrained(model_id)
@@ -37,7 +38,7 @@ class TranscriptionResponse(BaseModel):
 @app.post("/transcribe", response_model=TranscriptionResponse)
 async def transcribe(file: UploadFile = File(...)):
     audio_bytes = await file.read()
-    result = pipe(audio_bytes, generate_kwargs={"forced_decoder_ids": forced_decoder_ids})
+    result = pipe(audio_bytes, generate_kwargs={"forced-decoder-ids": forced_decoder_ids})
     return {"text": result["text"]}
 
 
