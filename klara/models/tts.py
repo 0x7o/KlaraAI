@@ -12,9 +12,10 @@ class TTS:
         self.p = pyaudio.PyAudio()
 
     async def play_audio(self, audio_bytes):
+        sample_rate = self.get_sample_rate(audio_bytes)
         stream = self.p.open(format=pyaudio.paInt16,
                              channels=1,
-                             rate=44100,
+                             rate=sample_rate,
                              output=True)
         audio_array = np.frombuffer(audio_bytes, dtype=np.float32)
         stream.write(audio_array.tobytes())
@@ -32,12 +33,9 @@ class TTS:
                 return await response.read()
 
     async def say_async(self, text_list):
-        tasks = []
-        for text in text_list:
-            audio_bytes = await self.get_audio(text)
-            task = asyncio.create_task(self.play_audio(audio_bytes))
-            tasks.append(task)
-        await asyncio.gather(*tasks)
+        audio_bytes_list = await asyncio.gather(*[self.get_audio(text) for text in text_list])
+        for audio_bytes in audio_bytes_list:
+            await self.play_audio(audio_bytes)
 
     def say(self, text_list):
         asyncio.run(self.say_async(text_list))
